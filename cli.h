@@ -7,6 +7,7 @@
 #include <string.h>
 #include <assert.h>
 
+// TODO: Trim string values from arguments 
 // TODO: Add optional and default values
 // TODO: Add possible values
 // TODO: Add better description formatting, placeholders and stuff
@@ -101,7 +102,8 @@ static void *cli_get_data(const char *name)
   while (arg && strcmp(name, arg->name))
 	arg = arg->next;
 
-  assert(arg && "Could not get arg data");
+  assert(arg && "Argument must be registered");
+  assert(arg->data && "Could not get arg data");
   return arg->data;
 }
 
@@ -244,9 +246,9 @@ static int cli_get_arg_data(cli_arg* arg, int start, int argc, char *argv[])
   switch (arg->type) {
 	
   case Arg_str: {
-	char *data = {0};
-	advanced = cli_get_arg_str(ptr, start, argc, argv, &data);
-	if (!advanced) arg->data = (void *)data;
+	char *buf = {0};
+	advanced = cli_get_arg_str(ptr, start, argc, argv, &buf);
+	if (advanced) arg->data = (void *)buf;
 	break;
   }
   case Arg_int: {
